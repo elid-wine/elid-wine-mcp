@@ -1,0 +1,56 @@
+{
+  "name": "elid-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for ELID (elid.wine): wine identification, vintage facts and Swiss-market shop prices",
+  "mcpName": "io.github.rvantonder/elid-mcp",
+  "type": "module",
+  "main": "dist/server.js",
+  "types": "dist/server.d.ts",
+  "bin": {
+    "elid-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "!dist/**/*.map",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc && chmod +x dist/index.js",
+    "dev": "tsx src/index.ts",
+    "test": "tsx --test test/*.test.ts",
+    "test:live": "ELID_LIVE=1 tsx --test test/live.test.ts",
+    "inspect": "npx @modelcontextprotocol/inspector node dist/index.js",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "wine",
+    "elid",
+    "lwin",
+    "sommelier"
+  ],
+  "author": "Rijnard van Tonder",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rvantonder/elid-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rvantonder/elid-mcp/issues"
+  },
+  "homepage": "https://elid.wine/api",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3"
+  }
+}
