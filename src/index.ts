@@ -7,11 +7,11 @@ async function main() {
   const client = new ElidClient({
     token: process.env.ELID_API_TOKEN,
     baseUrl: process.env.ELID_BASE_URL,
-    userAgent: `elid-wine/${SERVER_VERSION}`,
+    userAgent: `elid-wine-mcp/${SERVER_VERSION}`,
   });
   if (!client.hasToken) {
     console.error(
-      "[elid-wine] ELID_API_TOKEN is not set: only the public shop-price tools will work. See https://elid.wine/api.",
+      "[elid-wine-mcp] ELID_API_TOKEN is not set: only the public shop-price tools will work. See https://elid.wine/api.",
     );
   }
   const server = createServer(client);
@@ -19,6 +19,6 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error("[elid-wine] fatal:", err);
+  console.error("[elid-wine-mcp] fatal:", err);
   process.exit(1);
 });

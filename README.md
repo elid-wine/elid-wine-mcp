@@ -1,4 +1,4 @@
-# elid-wine
+# elid-wine-mcp
 
 An [MCP](https://modelcontextprotocol.io) server for **[ELID](https://elid.wine)**, which gives wines readable IDs. It lets Claude and other MCP clients:
 
@@ -32,7 +32,7 @@ Node.js 20 or newer is required.
 ### Claude Code
 
 ```sh
-claude mcp add elid -e ELID_API_TOKEN=your_token -- npx -y elid-wine
+claude mcp add elid -e ELID_API_TOKEN=your_token -- npx -y elid-wine-mcp
 ```
 
 ### Claude Desktop, Cursor, Windsurf and other clients
@@ -44,7 +44,7 @@ Add this to your MCP config file (for Claude Desktop, `claude_desktop_config.jso
   "mcpServers": {
     "elid": {
       "command": "npx",
-      "args": ["-y", "elid-wine"],
+      "args": ["-y", "elid-wine-mcp"],
       "env": { "ELID_API_TOKEN": "your_token" }
     }
   }
