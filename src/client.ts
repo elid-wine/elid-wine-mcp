@@ -44,7 +44,7 @@ export class ElidClient {
     this.token = opts.token || undefined;
     this.fetchImpl = opts.fetch ?? fetch;
     this.timeoutMs = opts.timeoutMs ?? 30_000;
-    this.userAgent = opts.userAgent ?? "elid-mcp";
+    this.userAgent = opts.userAgent ?? "elid-wine";
     this.retries = opts.retries ?? 2;
     this.retryDelayMs = opts.retryDelayMs ?? 500;
   }
