@@ -148,6 +148,8 @@ export function parseElid(input: string): { base: string; vintage?: string } {
     );
   }
   const base = parts.slice(0, 3).join("-").replace(/\+.*$/, "");
-  const vintage = parts[3]?.replace(/\+.*$/, "") || undefined;
+  const suffix = parts[3]?.replace(/\+.*$/, "") || undefined;
+  // XXXX is the unspecified-vintage placeholder: FR-CMP-DOMP01-XXXX is the base ELID.
+  const vintage = suffix === "XXXX" ? undefined : suffix;
   return { base, vintage };
 }

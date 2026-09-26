@@ -34,6 +34,7 @@ test("parseElid splits base and vintage", () => {
   assert.deepEqual(parseElid("fr-cmp-domp01-2015"), { base: "FR-CMP-DOMP01", vintage: "2015" });
   assert.deepEqual(parseElid("FR-CMP-DOMP01"), { base: "FR-CMP-DOMP01", vintage: undefined });
   assert.deepEqual(parseElid("DE-MOS-EGMU01+RIS-NVXX"), { base: "DE-MOS-EGMU01", vintage: "NVXX" });
+  assert.deepEqual(parseElid("FR-CMP-DOMP01-XXXX"), { base: "FR-CMP-DOMP01", vintage: undefined });
   assert.throws(() => parseElid("dom perignon"));
 });
 
