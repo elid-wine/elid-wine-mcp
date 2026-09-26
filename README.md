@@ -7,7 +7,7 @@ An [MCP](https://modelcontextprotocol.io) server for **[ELID](https://elid.wine)
 - get vintage fact sheets: alcohol, sugar, acidity, blend, soil, winemaking, aging, dosage, drinking window and food pairing
 - search observed retailer prices from Swiss-market shops
 
-An ELID is written `{CC}-{RRR}-{PPPP}{NN}[-{VINTAGE}]`. For example, `FR-CMP-DOMP01-2015` is the 2015 Dom Pérignon.
+An ELID is written `{CC}-{RRR}-{PPPP}{NN}[-{VINTAGE}]`. For example, `FR-CMP-DOMP01-2015` is the 2015 Dom Pérignon. The format is defined in the [ELID specification](https://github.com/elid-wine/spec).
 
 ## Tools
 

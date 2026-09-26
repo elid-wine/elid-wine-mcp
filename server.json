@@ -1,9 +1,9 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.rvantonder/elid-wine-mcp",
+  "name": "io.github.elid-wine/elid-wine-mcp",
   "title": "ELID Wine",
   "description": "Identify wines with ELIDs, get vintage fact sheets, and search Swiss-market shop prices (elid.wine).",
-  "repository": { "url": "https://github.com/rvantonder/elid-wine-mcp", "source": "github" },
+  "repository": { "url": "https://github.com/elid-wine/elid-wine-mcp", "source": "github" },
   "websiteUrl": "https://elid.wine/api",
   "version": "0.1.0",
   "packages": [

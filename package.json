@@ -2,7 +2,7 @@
   "name": "elid-wine-mcp",
   "version": "0.1.0",
   "description": "MCP server for ELID (elid.wine): wine identification, vintage facts and Swiss-market shop prices",
-  "mcpName": "io.github.rvantonder/elid-wine-mcp",
+  "mcpName": "io.github.elid-wine/elid-wine-mcp",
   "type": "module",
   "main": "dist/server.js",
   "types": "dist/server.d.ts",
@@ -35,10 +35,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rvantonder/elid-wine-mcp.git"
+    "url": "git+https://github.com/elid-wine/elid-wine-mcp.git"
   },
   "bugs": {
-    "url": "https://github.com/rvantonder/elid-wine-mcp/issues"
+    "url": "https://github.com/elid-wine/elid-wine-mcp/issues"
   },
   "homepage": "https://elid.wine/api",
   "engines": {
