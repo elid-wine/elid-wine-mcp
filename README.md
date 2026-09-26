@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/elid-wine/elid-wine-mcp/main/assets/elid-logo.svg" alt="ELID logo" width="56">
+
 # elid-wine-mcp
 
 An [MCP](https://modelcontextprotocol.io) server for **[ELID](https://elid.wine)**, which gives wines readable IDs. It lets Claude and other MCP clients:
