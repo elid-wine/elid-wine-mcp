@@ -1,24 +1,22 @@
-// Live tests against the real API. Run with: ELID_API_TOKEN=... npm run test:live
+// Live tests against the real, public API. Run with: npm run test:live
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { connect } from "./helpers.js";
 
-const token = process.env.ELID_API_TOKEN;
 const live = process.env.ELID_LIVE === "1";
 const opts = { skip: !live ? "set ELID_LIVE=1 (npm run test:live)" : undefined };
-const authOpts = { skip: opts.skip ?? (!token ? "ELID_API_TOKEN not set" : undefined) };
 const baseUrl = process.env.ELID_BASE_URL;
 
-test("live: match Kanonkop Paul Sauer", authOpts, async () => {
-  const s = await connect({ token, baseUrl });
+test("live: match Kanonkop Paul Sauer", opts, async () => {
+  const s = await connect({ baseUrl });
   const r = await s.call("elid_match_wine", { raw: "Kanonkop Paul Sauer 2021", top_n: 3 });
   assert.equal(r.isError, false, r.text);
   assert.equal(r.json.data[0].elid, "ZA-STB-KNKP01");
   await s.close();
 });
 
-test("live: LWIN lookup and substring search", authOpts, async () => {
-  const s = await connect({ token, baseUrl });
+test("live: LWIN lookup and substring search", opts, async () => {
+  const s = await connect({ baseUrl });
   const byLwin = await s.call("elid_search_wines", { lwin: "1082656" });
   assert.equal(byLwin.isError, false, byLwin.text);
   assert.equal(byLwin.json.data[0].elid, "FR-CMP-DOMP01");
@@ -28,8 +26,8 @@ test("live: LWIN lookup and substring search", authOpts, async () => {
   await s.close();
 });
 
-test("live: vintage facts for Dom Pérignon 2015", authOpts, async () => {
-  const s = await connect({ token, baseUrl });
+test("live: vintage facts for Dom Pérignon 2015", opts, async () => {
+  const s = await connect({ baseUrl });
   const r = await s.call("elid_get_wine", { elid: "FR-CMP-DOMP01-2015" });
   assert.equal(r.isError, false, r.text);
   assert.equal(r.json.facts.length, 1);
@@ -37,11 +35,11 @@ test("live: vintage facts for Dom Pérignon 2015", authOpts, async () => {
   await s.close();
 });
 
-test("live: invalid token is rejected", opts, async () => {
-  const s = await connect({ token: "elid_invalid", baseUrl });
-  const r = await s.call("elid_search_wines", { limit: 1 });
+test("live: unknown ELID is reported as an error", opts, async () => {
+  const s = await connect({ baseUrl });
+  const r = await s.call("elid_get_wine", { elid: "FR-CMP-ZZZZ01" });
   assert.equal(r.isError, true);
-  assert.match(r.text, /401/);
+  assert.match(r.text, /404/);
   await s.close();
 });
 

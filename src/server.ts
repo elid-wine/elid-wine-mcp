@@ -52,7 +52,7 @@ export function createServer(client: ElidClient): McpServer {
       description:
         "Match free wine text (e.g. 'Kanonkop Paul Sauer 2021', a label or a wine-list line) to ranked ELID base-wine identities. " +
         "Returns elid, lwin, display_name, producer_name, wine and scores (for ranking only, not probabilities). " +
-        "An empty list means no accepted match. Vintages in the text are not part of the result: pass the vintage to elid_get_wine. Requires ELID_API_TOKEN.",
+        "An empty list means no accepted match. Vintages in the text are not part of the result: pass the vintage to elid_get_wine.",
       inputSchema: {
         raw: z.string().min(1).max(500).describe("Wine text to match, up to 500 characters."),
         top_n: z.number().int().min(1).max(20).optional().describe("Number of candidates, 1–20 (default 5)."),
@@ -84,7 +84,7 @@ export function createServer(client: ElidClient): McpServer {
       description:
         "List ELID wine identities, ordered by ELID. Use q for a case-insensitive substring match on the name or ELID " +
         "(e.g. 'kanonkop' or 'FR-CMP-DOMP'), or lwin for an exact seven-digit LWIN lookup. " +
-        "For free text such as a full label, prefer elid_match_wine. Paginate by passing next_cursor as after. Requires ELID_API_TOKEN.",
+        "For free text such as a full label, prefer elid_match_wine. Paginate by passing next_cursor as after.",
       inputSchema: {
         q: z.string().max(200).optional().describe("Substring of the wine name or ELID."),
         lwin: z
@@ -112,7 +112,7 @@ export function createServer(client: ElidClient): McpServer {
         "Get one wine's catalog identity (producer, region, colour, type, classification, LWIN…) and its vintage fact sheets " +
         "(alcohol, residual sugar, acidity, blend, soil, winemaking, aging, dosage, drinking window, food pairing…). " +
         "Accepts a base ELID (FR-CMP-DOMP01) or a full ELID with vintage (FR-CMP-DOMP01-2015), which restricts facts to that vintage. " +
-        "Unknown fields are omitted. Does not include prices; use elid_search_shop_prices. Requires ELID_API_TOKEN.",
+        "Unknown fields are omitted. Does not include prices; use elid_search_shop_prices.",
       inputSchema: {
         elid: z.string().min(1).describe("Base or full ELID, e.g. FR-CMP-DOMP01 or FR-CMP-DOMP01-2015."),
         vintage: z
@@ -156,7 +156,7 @@ export function createServer(client: ElidClient): McpServer {
         "Search observed retailer prices from ~26 Swiss-market shops (plus gute-weine.de). Filter by free text (q), exact base ELID (elid) " +
         "and vintage, shop (site), and CHF price range. Rows keep the source currency, bottle size, case quantity and observation date (scraped_at); " +
         "missing values are null. These are historical observations, not current offers; shipping and taxes are not included. " +
-        "Always report vintage, size, currency, shop and date. Public, no token needed.",
+        "Always report vintage, size, currency, shop and date.",
       inputSchema: {
         q: z.string().optional().describe("Free-text search, accent-insensitive, e.g. 'dom perignon 2015'."),
         elid: z.string().optional().describe("Base ELID (vintage suffix is stripped and used as vintage if not given)."),
@@ -206,7 +206,7 @@ export function createServer(client: ElidClient): McpServer {
     {
       title: "List Swiss-market shops",
       description:
-        "List the shops covered by elid_search_shop_prices, with observation counts and the oldest/newest observation dates. Public, no token needed.",
+        "List the shops covered by elid_search_shop_prices, with observation counts and the oldest/newest observation dates.",
       inputSchema: {},
       annotations: { title: "List shops", ...READ_ONLY },
     },

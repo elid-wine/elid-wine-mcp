@@ -11,16 +11,7 @@
       "registryType": "npm",
       "identifier": "elid-wine-mcp",
       "version": "0.1.0",
-      "transport": { "type": "stdio" },
-      "environmentVariables": [
-        {
-          "name": "ELID_API_TOKEN",
-          "description": "ELID beta API bearer token (request from rvt@elid.wine). Required for matching, catalog search and vintage facts; shop-price tools work without it.",
-          "isRequired": false,
-          "isSecret": true,
-          "format": "string"
-        }
-      ]
+      "transport": { "type": "stdio" }
     }
   ]
 }

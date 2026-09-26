@@ -7,23 +7,19 @@ An [MCP](https://modelcontextprotocol.io) server for **[ELID](https://elid.wine)
 - get vintage fact sheets: alcohol, sugar, acidity, blend, soil, winemaking, aging, dosage, drinking window and food pairing
 - search observed retailer prices from Swiss-market shops
 
-An ELID is written `{CC}-{RRR}-{PPPP}{WW}[-{VINTAGE}]`. For example, `FR-CMP-DOMP01-2015` is the 2015 Dom Pérignon.
+An ELID is written `{CC}-{RRR}-{PPPP}{NN}[-{VINTAGE}]`. For example, `FR-CMP-DOMP01-2015` is the 2015 Dom Pérignon.
 
 ## Tools
 
-| Tool | What it does | Token |
-| --- | --- | --- |
-| `elid_match_wine` | Matches free text to ranked base-wine ELIDs, with LWINs and scores | required |
-| `elid_search_wines` | Searches the catalog by name/ELID substring (`q`) or exact 7-digit `lwin`, with cursor pagination | required |
-| `elid_get_wine` | Returns a wine's identity and vintage fact sheets. A full ELID such as `…-2015` limits the facts to that vintage | required |
-| `elid_search_shop_prices` | Searches Swiss-market shop prices by text, ELID and vintage, shop, or CHF range, with sorting | not needed |
-| `elid_list_shops` | Lists covered shops with observation counts and date ranges | not needed |
+| Tool | What it does |
+| --- | --- |
+| `elid_match_wine` | Matches free text to ranked base-wine ELIDs, with LWINs and scores |
+| `elid_search_wines` | Searches the catalog by name/ELID substring (`q`) or exact 7-digit `lwin`, with cursor pagination |
+| `elid_get_wine` | Returns a wine's identity and vintage fact sheets. A full ELID such as `…-2015` limits the facts to that vintage |
+| `elid_search_shop_prices` | Searches Swiss-market shop prices by text, ELID and vintage, shop, or CHF range, with sorting |
+| `elid_list_shops` | Lists covered shops with observation counts and date ranges |
 
-Every tool is read-only. Results include a `wine_url` (for example `https://elid.wine/wine/FR-CMP-DOMP01#vintage-2015`) that you can cite.
-
-## Get a token
-
-The catalog, matching and fact tools use the ELID beta API, which needs a bearer token. Email **rvt@elid.wine** to request one ([API docs](https://elid.wine/api)). The shop-price tools work without a token.
+Every tool is read-only, and no API key or account is needed. Results include a `wine_url` (for example `https://elid.wine/wine/FR-CMP-DOMP01#vintage-2015`) that you can cite.
 
 ## Install
 
@@ -32,7 +28,7 @@ Node.js 20 or newer is required.
 ### Claude Code
 
 ```sh
-claude mcp add elid -e ELID_API_TOKEN=your_token -- npx -y elid-wine-mcp
+claude mcp add elid -- npx -y elid-wine-mcp
 ```
 
 ### Claude Desktop, Cursor, Windsurf and other clients
@@ -44,8 +40,7 @@ Add this to your MCP config file (for Claude Desktop, `claude_desktop_config.jso
   "mcpServers": {
     "elid": {
       "command": "npx",
-      "args": ["-y", "elid-wine-mcp"],
-      "env": { "ELID_API_TOKEN": "your_token" }
+      "args": ["-y", "elid-wine-mcp"]
     }
   }
 }
@@ -55,7 +50,6 @@ Add this to your MCP config file (for Claude Desktop, `claude_desktop_config.jso
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `ELID_API_TOKEN` | none | Bearer token for `/api/v1`. It is sent only in the `Authorization` header, never in URLs |
 | `ELID_BASE_URL` | `https://elid.wine` | Alternative deployment, e.g. `https://elid-site.exe.xyz` |
 
 ## Example
@@ -83,7 +77,7 @@ Then it answers with the ELID, cites `https://elid.wine/wine/FR-CMP-DOMP01#vinta
 npm install
 npm run build
 npm test                                  # unit tests (mocked HTTP)
-ELID_API_TOKEN=... npm run test:live      # live tests against elid.wine
+npm run test:live                         # live tests against elid.wine
 npm run inspect                           # MCP Inspector UI
 ```
 

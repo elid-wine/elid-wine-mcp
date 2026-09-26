@@ -22,7 +22,7 @@ jobs:
       - run: npm test
 
   live:
-    # Runs against the real API only when the ELID_API_TOKEN repo secret is configured.
+    # Runs against the real API (public, no secrets needed).
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     steps:
@@ -33,5 +33,3 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run test:live
-        env:
-          ELID_API_TOKEN: ${{ secrets.ELID_API_TOKEN }}

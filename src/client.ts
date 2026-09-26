@@ -1,8 +1,9 @@
 /**
  * Thin HTTP client for the ELID API (https://elid.wine/api).
  *
- * - Authenticated beta endpoints live under /api/v1 and need a bearer token.
- * - The Swiss-market shop search under /api/shop/ch is public.
+ * - The catalog, matching and fact endpoints live under /api/v1.
+ * - The Swiss-market shop search lives under /api/shop/ch.
+ * Both are public: no token is needed.
  */
 
 export const DEFAULT_BASE_URL = "https://elid.wine";
@@ -18,7 +19,6 @@ export class ElidApiError extends Error {
 }
 
 export interface ElidClientOptions {
-  token?: string;
   baseUrl?: string;
   fetch?: typeof fetch;
   timeoutMs?: number;
@@ -32,7 +32,6 @@ type Query = Record<string, string | number | undefined>;
 
 export class ElidClient {
   readonly baseUrl: string;
-  private readonly token?: string;
   private readonly fetchImpl: typeof fetch;
   private readonly timeoutMs: number;
   private readonly userAgent: string;
@@ -41,16 +40,11 @@ export class ElidClient {
 
   constructor(opts: ElidClientOptions = {}) {
     this.baseUrl = (opts.baseUrl || DEFAULT_BASE_URL).replace(/\/+$/, "");
-    this.token = opts.token || undefined;
     this.fetchImpl = opts.fetch ?? fetch;
     this.timeoutMs = opts.timeoutMs ?? 30_000;
     this.userAgent = opts.userAgent ?? "elid-wine-mcp";
     this.retries = opts.retries ?? 2;
     this.retryDelayMs = opts.retryDelayMs ?? 500;
-  }
-
-  get hasToken(): boolean {
-    return Boolean(this.token);
   }
 
   /** Public web URL for a wine page, optionally anchored to a vintage section. */
@@ -61,17 +55,17 @@ export class ElidClient {
 
   /** GET /api/v1/wines */
   listWines(params: { q?: string; lwin?: string; limit?: number; after?: string }) {
-    return this.request("GET", "/api/v1/wines", { query: params, auth: true });
+    return this.request("GET", "/api/v1/wines", { query: params });
   }
 
   /** GET /api/v1/wines/{elid} */
   getWine(baseElid: string) {
-    return this.request("GET", `/api/v1/wines/${encodeURIComponent(baseElid)}`, { auth: true });
+    return this.request("GET", `/api/v1/wines/${encodeURIComponent(baseElid)}`);
   }
 
   /** POST /api/v1/match */
   match(body: { raw: string; top_n?: number; country_code?: string; producer_id?: string }) {
-    return this.request("POST", "/api/v1/match", { body, auth: true });
+    return this.request("POST", "/api/v1/match", { body });
   }
 
   /** GET /api/shop/ch (public) */
@@ -87,7 +81,7 @@ export class ElidClient {
   private async request(
     method: "GET" | "POST",
     path: string,
-    opts: { query?: Query; body?: unknown; auth?: boolean } = {},
+    opts: { query?: Query; body?: unknown } = {},
   ): Promise<any> {
     const url = new URL(this.baseUrl + path);
     for (const [k, v] of Object.entries(opts.query ?? {})) {
@@ -98,15 +92,6 @@ export class ElidClient {
       Accept: "application/json",
       "User-Agent": this.userAgent,
     };
-    if (opts.auth) {
-      if (!this.token) {
-        throw new ElidApiError(
-          "This tool needs an ELID API token. Set the ELID_API_TOKEN environment variable " +
-            "(request one from rvt@elid.wine; see https://elid.wine/api).",
-        );
-      }
-      headers.Authorization = `Bearer ${this.token}`;
-    }
     let body: string | undefined;
     if (opts.body !== undefined) {
       headers["Content-Type"] = "application/json";
@@ -141,12 +126,7 @@ export class ElidClient {
 
     if (!res.ok) {
       const detail = (data && typeof data.error === "string" && data.error) || text.slice(0, 300) || res.statusText;
-      const hint =
-        res.status === 401
-          ? " Check that ELID_API_TOKEN is set to a valid, unrevoked token."
-          : res.status === 503
-            ? " The service is temporarily unavailable; retry shortly."
-            : "";
+      const hint = res.status === 503 ? " The service is temporarily unavailable; retry shortly." : "";
       throw new ElidApiError(`ELID API ${res.status}: ${detail}${hint}`, res.status);
     }
     if (data === null) {

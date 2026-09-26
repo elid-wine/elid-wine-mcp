@@ -38,7 +38,7 @@ test("parseElid splits base and vintage", () => {
 });
 
 test("lists all five tools with read-only annotations", async () => {
-  const s = await connect({ token: "t", fetch: mockFetch({}).f });
+  const s = await connect({ fetch: mockFetch({}).f });
   const { tools } = await s.client.listTools();
   assert.deepEqual(tools.map((t) => t.name).sort(), [
     "elid_get_wine",
@@ -51,34 +51,24 @@ test("lists all five tools with read-only annotations", async () => {
   await s.close();
 });
 
-test("match sends bearer token and JSON body, adds wine_url", async () => {
+test("match sends a JSON body without credentials, adds wine_url", async () => {
   const m = mockFetch({
     "POST /api/v1/match": () => [200, { data: [{ elid: "ZA-STB-KNKP01", score: 0.8 }], snapshot: "x" }],
   });
-  const s = await connect({ token: "secret", fetch: m.f });
+  const s = await connect({ fetch: m.f });
   const r = await s.call("elid_match_wine", { raw: "Kanonkop Paul Sauer 2021", top_n: 3, country_code: "za" });
   assert.equal(r.isError, false);
   assert.equal(r.json.data[0].wine_url, "https://elid.wine/wine/ZA-STB-KNKP01");
   const { init, url } = m.seen[0];
-  assert.equal((init.headers as any).Authorization, "Bearer secret");
-  assert.equal(url.search, "", "token and params must not leak into the URL");
+  assert.equal((init.headers as any).Authorization, undefined);
+  assert.equal(url.search, "", "match parameters belong in the body, not the URL");
   assert.deepEqual(JSON.parse(String(init.body)), { raw: "Kanonkop Paul Sauer 2021", top_n: 3, country_code: "ZA" });
-  await s.close();
-});
-
-test("authenticated tools fail clearly without a token, without calling the API", async () => {
-  const m = mockFetch({});
-  const s = await connect({ fetch: m.f });
-  const r = await s.call("elid_search_wines", { q: "kanonkop" });
-  assert.equal(r.isError, true);
-  assert.match(r.text, /ELID_API_TOKEN/);
-  assert.equal(m.seen.length, 0);
   await s.close();
 });
 
 test("get_wine with a full ELID restricts facts to that vintage", async () => {
   const m = mockFetch({ "GET /api/v1/wines/FR-CMP-DOMP01": () => [200, DOMP] });
-  const s = await connect({ token: "t", fetch: m.f });
+  const s = await connect({ fetch: m.f });
   const r = await s.call("elid_get_wine", { elid: "FR-CMP-DOMP01-2015" });
   assert.equal(r.isError, false);
   assert.deepEqual(r.json.facts, [DOMP.data.facts[1]]);
@@ -91,12 +81,12 @@ test("get_wine with a full ELID restricts facts to that vintage", async () => {
   await s.close();
 });
 
-test("API errors surface as tool errors with status and hint", async () => {
-  const m = mockFetch({ "GET /api/v1/wines": () => [401, { error: "A valid bearer token is required." }] });
-  const s = await connect({ token: "bad", fetch: m.f });
-  const r = await s.call("elid_search_wines", { q: "x" });
+test("API errors surface as tool errors with status", async () => {
+  const m = mockFetch({ "GET /api/v1/wines/FR-CMP-NOPE01": () => [404, { error: "Wine not found." }] });
+  const s = await connect({ fetch: m.f });
+  const r = await s.call("elid_get_wine", { elid: "FR-CMP-NOPE01" });
   assert.equal(r.isError, true);
-  assert.match(r.text, /401: A valid bearer token is required\. Check that ELID_API_TOKEN/);
+  assert.match(r.text, /ELID API 404: Wine not found\./);
   await s.close();
 });
 

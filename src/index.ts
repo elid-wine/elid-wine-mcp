@@ -5,15 +5,9 @@ import { createServer, SERVER_VERSION } from "./server.js";
 
 async function main() {
   const client = new ElidClient({
-    token: process.env.ELID_API_TOKEN,
     baseUrl: process.env.ELID_BASE_URL,
     userAgent: `elid-wine-mcp/${SERVER_VERSION}`,
   });
-  if (!client.hasToken) {
-    console.error(
-      "[elid-wine-mcp] ELID_API_TOKEN is not set: only the public shop-price tools will work. See https://elid.wine/api.",
-    );
-  }
   const server = createServer(client);
   await server.connect(new StdioServerTransport());
 }
